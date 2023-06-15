@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Dashboard - SB Admin</title>
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+
+  <style>
+    .modals {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modals-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      text-align: center;
+    }
+
+    .blink {
+      animation: blinker 5s linear infinite;
+    }
+
+    .hidden-content {
+      display: none;
+    }
+
+    @keyframes blinker {
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body onload="checkTime() ">
+  <nav class="navbar navbar-expand-sm" style="background-color: #0000cc;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="nm.jpeg" alt="Logo" width="150%" height="60px"
+          class=" rounded float-left d-inline-block align-text-top">
+      </a>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <div class="card text-white " style="width: 10rem; background-color: transparent  ">
+              <div class="card-body text-center py-0" style="height: 51px; line-height: 2;"><b>
+                  <span id="current-time" style="font-size: small;"></span> <br>
+                  <span id="tanggal" style="font-size: small;"></span>
+                </b></div>
+              <!-- isi Card Shift bisa di custom lagi -->
+            </div>
+          </li>
+          <li class="nav-item">
+            <div class="card text-white border border-white"
+              style="width: 10rem; margin-left: 20px; font-size: small; background-color: transparent ">
+              <div class="card-header text-center py-0 "><b>Shift :</b></div>
+              <div class="card-body text-center py-3" style="height: 3rem;"><b>
+                  <span id="shift"></span>
+                </b></div>
+              <!-- isi Card Shift bisa di custom lagi -->
+            </div>
+          </li>
+          <li class="nav-item">
+            <div class="card text-white border border-white"
+              style="width: 15rem; margin-left: 20px ; font-size: small ;background-color: transparent; ">
+              <div class="card-header  py-0"><b>
+                  <span id="nama"></span>
+                </b></div>
+              <div class="card-body py-0" style="height: 2rem;"><b>
+                  <span id="nrp"></span>
+                </b></div>
+              <!-- isi Card Shift bisa di custom lagi -->
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+  <div class="container-fluid py-3">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2  text-center">
+          <div class="card h-60 border border-dark">
+            <div class="card-header bg-secondary" style="color: white; font-size: 12px;"><b>NAMA PART</b>
+            </div>
+            <div class="card-body text-center px-0" style=" height: 4rem;">
+              <p class="card-text" id="part">500</p>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2  text-center">
+          <div class="card h-60 border border-dark">
+            <div class="card-header " style="background-color: #4db8ff; font-size: 12px;"><b>PRODUCTION</b>
+            </div>
+            <div class="card-body py-0" style=" height: 4rem; font-size: 40px; font-weight:600;">
+              <span class="py-0" id="hitung"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2  text-center">
+          <div class="card h-60 border border-dark">
+            <div class="card-header" style="background-color: #33ff33; font-size: 12px;"><b>OK</b></div>
+            <div class="card-body py-0" style=" height: 4rem; font-size: 40px; font-weight:600;">
+              <span id="ok"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2  text-center">
+          <div class="card h-60 border border-dark">
+            <div class="card-header p-0">
+              <button class="btn btn-danger" style=" font-size: 12px; width: 100%;"
+                id="toggle-btn2"><b>REJECT</b></button>
+            </div>
+            <div class="card-body py-0" style=" height: 4rem; font-size: 40px; font-weight:600;">
+              <span id="reject"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2  text-center">
+          <div class="card h-60 border border-dark">
+
+            <div class="card-header p-0">
+              <button class="btn btn-warning" style="font-size: 12px; width: 100%;"
+                id="toggle-btn1"><b>DOWNTIME</b></button>
+            </div>
+            <div class="card-body py-0" style=" height: 4rem; font-size: 40px; font-weight:600;">
+              <p class="card-text">
+                <span id="total"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2  text-center">
+          <div class="card h-60 border border-dark">
+            <div class="card-header bg-secondary" style="color: white; font-size: 12px;"><b>TARGET</b></div>
+            <div class="card-body py-0" style=" height: 4rem; font-size: 40px; font-weight:600;">
+              <span id="target"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <div class="container-fluid bg-success">
+    asd
+  </div>
+
+  <div id="hidden-content1" class="hidden-content">
+    <div class="container-fluid py-3">
+      <div class="container-fluid bg-warning border border-dark text-center " style="width: 100;">
+        DOWNTIME MAINTENANCE
+      </div>
+      <div class="container-fluid  border border-dark">
+
+        <div class="row py-3" style="font-weight:normal;">
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"> <b>DIE </b>
+              </div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                  style="background-color:white;">
+                  <span id="counterDisplay">0</span> mnt
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Die </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime die open/close?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>TILTING</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"
+                  style="background-color:white;">
+                  <span id="counterDisplay2">0</span> mnt
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Tilting
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime tilting up/down?
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                          onclick="startCounter2()">OK</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>EJECTOR</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop3"
+                  style="background-color:white;">
+                  <span id="counterDisplay3">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Ejector
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime ejector fwd/bwd?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter3()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;">
+                <b>EXTRAKTOR</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop4"
+                  style="background-color:white;">
+                  <span id="counterDisplay4">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime
+                        Ekstraktor</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime ekstraktor?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter4()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="row py-3 " style="font-weight:normal;">
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>SAFETY
+                  HOOK</b></div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop5"
+                  style="background-color:white;">
+                  <span id="counterDisplay5">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Safety
+                        Hook</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime safety hook?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter5()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>CORE
+                  UNIT</b></div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop6"
+                  style="background-color:white;">
+                  <span id="counterDisplay6">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop6" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Core Unit
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime core unit?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter6()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>HYDRAULIC
+                  UNIT</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop7"
+                  style="background-color:white;">
+                  <span id="counterDisplay7">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop7" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Hydraulic
+                        Unit/h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime hydraulic unit?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter7()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>ELECTRICAL
+                  UNIT</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop8"
+                  style="background-color:white;">
+                  <span id="counterDisplay8">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop8" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime
+                        Electrical Unit/h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime electrical unit?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter8()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="container-fluid py-2">
+      <div class="container-fluid bg-success border border-dark text-center " style="width: 100; color: white;">
+        CLEAR DOWNTIME MAINTENANCE
+      </div>
+      <div class="container-fluid  border border-dark py-3">
+        <div class="row row-cols-4">
+          <div class="col">
+            <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#staticBackdrop9"
+              style="height: 4rem; width: 13.5rem;">STOP
+              DOWNTIME</button>
+          </div>
+
+          <div class="modal fade" id="staticBackdrop9" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Apakah yakin downtime telah selesai?
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button class="btn btn-primary" data-bs-target="#ModalToggle10" data-bs-toggle="modal"
+                    onclick="stopCounter()" id="stop1">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="ModalToggle10" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Kirim Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Pilih lanjutkan bagian downtime ke bagian
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" data-bs-target="#engcont" data-bs-toggle="modal">ENGINEERING</button>
+                  <button class="btn btn-secondary" data-bs-target="#prodcont"
+                    data-bs-toggle="modal">PRODUCTION</button>
+                  <button class="btn btn-success" data-bs-target="#clear" data-bs-toggle="modal">SELESAI</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="engcont" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime
+                    Engineering</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Downtime akan diteruskan ke bagian Engineering
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button class="btn btn-primary" data-bs-target="#cleareng" data-bs-toggle="modal"
+                    onclick="showModal2()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="prodcont" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime
+                    Produksi</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Downtime akan diteruskan ke bagian Produksi
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button id="tombolprod" class="btn btn-primary" data-bs-target="#clearprod" data-bs-toggle="modal"
+                    onclick="showModal()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            var tombol = document.getElementById("tombolprod");
+            tombol.addEventListener("click", function () {
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", "notif_tv.php");
+              xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+              xhr.send("nilai=1");
+            });
+
+          </script>
+
+          <div class="col">
+            <button type="button" class="btn btn-warning " data-bs-toggle="modal" data-bs-target="#staticBackdrop10"
+              style="height: 4rem; width: 13.5rem;">RESET
+              DOWNTIME</button>
+          </div>
+          <div class="modal fade" id="staticBackdrop10" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Reset Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Apakah yakin akan mereset downtime ?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                    onclick="resetCounter()" id="reset1">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid py-3">
+      <div class="container-fluid bg-warning border border-dark text-center" style="width: 100;">
+        DOWNTIME PRODUKSI
+      </div>
+      <div class="container-fluid  border border-dark">
+
+        <div class="row py-3" style="font-weight:normal;">
+
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"> <b> EJECTOR MINUS
+                </b></div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop15 "
+                  style="background-color:white;">
+                  <span id="counterDisplay9">0</span> mnt
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop15" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Ejector Minus
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Ejector Minus?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter9()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"> <b> LAY OFF </b>
+              </div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop16 "
+                  style="background-color:white;">
+                  <span id="counterDisplay10">0</span> mnt
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop16" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Lay Off</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Lay Off?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter10()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>SANDCORE
+                  HABIS</b></div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop21"
+                  style="background-color:white;">
+                  <span id="counterDisplay11">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop21" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Sandcore
+                        Habis </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Sandcore Habis ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter11()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>RETAK</b></div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop22"
+                  style="background-color:white;">
+                  <span id="counterDisplay12">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop22" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Retak </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"> Apakah ingin mulai menghitung downtime retak? </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter12()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid py-2">
+      <div class="container-fluid bg-success border border-dark text-center" style="width: 100; color: white;">
+        CLEAR DOWNTIME PRODUKSI
+      </div>
+      <div class="container-fluid  border border-dark py-3">
+        <div class="row row-cols-4">
+          <div class="col">
+            <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#staticBackdrop23"
+              style="height: 4rem; width: 13.5rem;">STOP
+              DOWNTIME</button>
+          </div>
+
+          <div class="modal fade" id="staticBackdrop23" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Apakah yakin downtime telah selesai?
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button class="btn btn-primary" data-bs-target="#ModalToggle20" data-bs-toggle="modal"
+                    onclick="stopCounterProd()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="ModalToggle20" aria-hidden="true" aria-labelledby="exampleModalToggleLabel10"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel10">Kirim Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Pilih lanjutkan bagian downtime ke bagian
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" data-bs-target="#engcont" data-bs-toggle="modal">ENGINEERING</button>
+                  <button class="btn btn-secondary" data-bs-target="#maintcont"
+                    data-bs-toggle="modal">MAINTENANCE</button>
+                  <button class="btn btn-success" data-bs-target="#clear" data-bs-toggle="modal">SELESAI</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="engcont" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime Engineering
+                  </h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Downtime akan diteruskan ke bagian Engineering
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button class="btn btn-primary" data-bs-target="#cleareng" data-bs-toggle="modal">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="maintcont" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime Maintenance
+                  </h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Downtime akan diteruskan ke bagian Maintenance
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button id="tombolmaint" class="btn btn-primary" data-bs-target="#clearmaint" data-bs-toggle="modal"
+                    onclick="showModal3()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <button type="button" class="btn btn-warning " data-bs-toggle="modal" data-bs-target="#staticBackdrops10"
+              style="height: 4rem; width: 13.5rem;">RESET
+              DOWNTIME</button>
+          </div>
+          <div class="modal fade" id="staticBackdrops10" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Reset Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Apakah yakin akan mereset downtime ?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                    onclick="resetCounterProd()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid py-3">
+      <div class="container-fluid bg-warning border border-dark text-center" style="width: 100;">
+        DOWNTIME ENGINEERING
+      </div>
+      <div class="container-fluid  border border-dark">
+
+        <div class="row py-3 " style="font-weight:normal;">
+
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>EJECTOR</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop40"
+                  style="background-color:white;">
+                  <span id="counterDisplay13">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop40" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Ejector</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Ejector?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter13()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>CORE</b></div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop41"
+                  style="background-color:white;">
+                  <span id="counterDisplay14">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop41" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Core</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Core?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter14()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>DIES CACAT</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop42"
+                  style="background-color:white;">
+                  <span id="counterDisplay15">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop42" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Dies Cacat
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Dies Cacat ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter15()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b>DANDORI</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop43"
+                  style="background-color:white;">
+                  <span id="counterDisplay16">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop43" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Dandori </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Dandori?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter16()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header bg-danger" style="color: white; font-size: 12px;"><b> GAS VENT LEPAS
+                </b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop44"
+                  style="background-color:white;">
+                  <span id="counterDisplay17">0</span> mnt
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop44" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Downtime Gas Vent
+                        Lepas</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung downtime Gas Vent Lepas?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="startCounter17()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid py-2">
+      <div class="container-fluid bg-success border border-dark text-center" style="width: 100; color: white;">
+        CLEAR DOWNTIME ENGINEERING
+      </div>
+      <div class="container-fluid  border border-dark py-3">
+        <div class="row row-cols-4">
+          <div class="col">
+            <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#staticBackdrop35"
+              style="height: 4rem; width: 13.5rem;">STOP
+              DOWNTIME</button>
+          </div>
+
+          <div class="modal fade" id="staticBackdrop35" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Apakah yakin downtime telah selesai?
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button class="btn btn-primary" data-bs-target="#ModalToggle30" data-bs-toggle="modal"
+                    onclick="stopCounterEng()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="ModalToggle30" aria-hidden="true" aria-labelledby="exampleModalToggleLabel20"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel20">Kirim Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Pilih lanjutkan bagian downtime ke bagian
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" data-bs-target="#prodcont" data-bs-toggle="modal">PRODUKSI</button>
+                  <button class="btn btn-secondary" data-bs-target="#maintcont"
+                    data-bs-toggle="modal">MAINTENANCE</button>
+                  <button class="btn btn-success" data-bs-target="#clear" data-bs-toggle="modal">SELESAI</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="maintcont" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Clear Downtime Maintenance
+                  </h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Downtime akan diteruskan ke bagian Maintenance
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-toggle="modal">CANCEL</button>
+                  <button class="btn btn-primary" data-bs-target="#clearmaint" data-bs-toggle="modal"
+                    onclick="showModal()">OK</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <button type="button" class="btn btn-warning " data-bs-toggle="modal" data-bs-target="#staticBackdrop50"
+              style="height: 4rem; width: 13.5rem;">RESET
+              DOWNTIME</button>
+          </div>
+          <div class="modal fade" id="staticBackdrop50" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Reset Downtime</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Apakah yakin akan mereset downtime ?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                    onclick="resetCounterEng()">OK</button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="hidden-content2" class="hidden-content">
+    <div class="container-fluid py-3">
+      <div class="container-fluid bg-warning border border-dark text-center" style="width: 100%;">
+        <b> DATA REJECT PRODUKSI</b>
+      </div>
+      <div class="container-fluid  border border-dark">
+
+        <div class="row py-3" style="font-weight:normal;">
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b>WARM UP </b>
+              </div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop11"
+                  style="background-color:white;">
+                  <span id="counters1"> 0 </span> pcs
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop11" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Warm-Up </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah anda ingin menambahkan Reject Warm-up ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(0) ">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b> UN-FILL </b>
+              </div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop12"
+                  style="background-color:white;">
+                  <span id="counters2"> 0 </span> pcs
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop12" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Un-Fill</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject Un-Fill?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(1)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b> UNDERCUT </b>
+              </div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop13"
+                  style="background-color:white;">
+                  <span id="counters3">0</span> pcs
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop13" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Undercut</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject Undercut?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(2)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b> SHRINKAGE</b>
+              </div>
+
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop14 "
+                  style="background-color:white;">
+                  <span id="counters4">0</span> pcs
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrop14" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Shrinkage
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject Shrinkage?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(3)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row py-3" style="font-weight:normal;">
+
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b>VISUAL KASAR</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop17"
+                  style="background-color:white;">
+                  <span id="counters5">0</span> pcs
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop17" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Visual Kasar
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject Visual Kasar ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(4)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b>PIN HOLE</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop18"
+                  style="background-color:white;">
+                  <span id="counters6"> 0 </span> pcs
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop18" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Pin Hole
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject Pin Hole ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(5)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b>NEMPEL</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop19"
+                  style="background-color:white;">
+                  <span id="counters7"> 0</span> pcs
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop19" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Nempel </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject nempel ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(6)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3  text-center">
+            <div class="card h-60 border border-dark">
+              <div class="card-header " style="background-color: #41644A; color: white; font-size: 12px;">
+                <b>COATING TERKELUPAS</b>
+              </div>
+              <div class="card-body py-1" style=" height: 4rem; font-size: 40px; font-weight:600; line-height: 1;">
+                <button class="border border-white py-0" data-bs-toggle="modal" data-bs-target="#staticBackdrop20"
+                  style="background-color:white;">
+                  <span id="counters8">0</span> pcs
+                </button>
+              </div>
+              <div class="modal fade" id="staticBackdrop20" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Reject Coating
+                        Terkelupas </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah ingin mulai menghitung Reject Coating Terkelupas ?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="incrementCounter(7)">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-content-end py-3" style="font-weight:normal;">
+
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-body p-0 text-white"
+                style=" height: 4rem; font-size: 100%; font-weight:600; line-height: 1;">
+                <button type="button" class="border border-white bg-success py-0 text-white" data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrops" style="height: 100%; width: 100%;">
+                  <b>UNDO REJECT</b>
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrops" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">UNDO REJECT
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah anda yakin akan meng-undo data reject?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="undo()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2  text-center">
+            <div class="card h-60 border border-dark">
+
+              <div class="card-body p-0 text-white"
+                style=" height: 4rem; font-size: 100%; font-weight:600; line-height: 1;">
+                <button type="button" class="border border-white bg-warning py-0 " data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrops1" style="height: 100%; width: 100%;">
+                  <b>RESET REJECT</b>
+                </button>
+              </div>
+
+              <div class="modal fade" id="staticBackdrops1" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">RESET REJECT
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Apakah anda yakin akan mereset data reject?
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                      <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        onclick="resetCounters()">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <div id="myModal" class="modals">
+    <div class="modals-content blink">
+      <h2>Downtime Diteruskan ke bagian Produksi</h2>
+      <p>Produksi diharapkan segera melakukan pengecekan</p>
+      <button onclick="hideModal()">Tutup Modal</button>
+    </div>
+  </div>
+
+  <div id="myModal2" class="modals">
+    <div class="modals-content blink">
+      <h2>Downtime Diteruskan ke bagian Engineering</h2>
+      <p>Engineering diharapkan segera melakukan pengecekan</p>
+      <button onclick="hideModal2()">Tutup Modal</button>
+    </div>
+  </div>
+
+  <div id="myModal3" class="modals">
+    <div class="modals-content blink">
+      <h2>Downtime Diteruskan ke bagian Maintenance</h2>
+      <p>Maintenance diharapkan segera melakukan pengecekan</p>
+      <button onclick="hideModal3()">Tutup Modal</button>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script type="text/JavaScript" src="admin.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script src="js/scripts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+  <script src="assets/demo/chart-area-demo.js"></script>
+  <script src="assets/demo/chart-bar-demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+    crossorigin="anonymous"></script>
+  <script src="js/datatables-simple-demo.js"></script>
+
+  <script src="js/dtall.js"></script>
+  <script src="js/timerToLogin.js"></script>
+  <script src="js/countReject.js"></script>
+  <script src="js/koneksiPhp.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/notifmodal.js"></script>
+  <script src="js/updateDate.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $("#toggle-btn1").click(function () {
+        $("#hidden-content2").hide();
+        $("#hidden-content1").toggle();
+      });
+
+      $("#toggle-btn2").click(function () {
+        $("#hidden-content1").hide();
+        $("#hidden-content2").toggle();
+      });
+    });
+  </script>
+
+</body>
+
+</html>

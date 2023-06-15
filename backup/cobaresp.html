@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Counter Detik</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h1>Counter Detik</h1>
+    <p>Detik yang telah berlalu: <span id="counter">0</span></p>
+    <button onclick="startCounter(), stopval()" id="start">Mulai</button>
+    <button onclick="stopCounter()" id="stop">Berhenti</button>
+    <button onclick="resetCounter(), stopval()" id="reset">Reset</button>
+    <button onclick="cobaah()">Simpan ke Database</button>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script type="text/JavaScript" src="admin.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="assets/demo/chart-area-demo.js"></script>
+    <script src="assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
+        crossorigin="anonymous"></script>
+    <script src="js/datatables-simple-demo.js"></script>
+
+    <script>
+        var seconds = 0;
+        var timerId;
+
+        // Memeriksa apakah nilai counter tersimpan di session storage saat halaman dimuat ulang
+        // if (sessionStorage.getItem('counter')) {
+        //     seconds = parseInt(sessionStorage.getItem('counter'));
+        //     document.getElementById('counter').textContent = seconds;
+        //     startCounter();
+        // }
+
+        function startCounter() {
+            timerId = setInterval(updateCounter, 1000);
+            localStorage.setItem("counterStatus", "running");
+
+        }
+
+        function stopCounter() {
+            clearInterval(timerId);
+            localStorage.setItem("counterStatus", "stopped");
+        }
+
+        var button = document.getElementById("stop");
+        var resetButton = document.getElementById("reset");
+        var resetButton2 = document.getElementById("start");
+
+        button.addEventListener("click", function () {
+            button.value = 1;
+            localStorage.setItem("buttonValue", button.value);
+        });
+
+        resetButton.addEventListener("click", function () {
+            button.value = 0;
+            localStorage.setItem("buttonValue", button.value);
+        });
+
+        resetButton2.addEventListener("click", function () {
+            button.value = 0;
+            localStorage.setItem("buttonValue", button.value);
+        });
+
+        window.onload = function () {
+
+
+            if (buttonValue === '1') {
+                stopCounter();
+            } else if (buttonValue === '0') {
+                if (sessionStorage.getItem('counter')) {
+                    seconds = parseInt(sessionStorage.getItem('counter'));
+                    document.getElementById('counter').textContent = seconds;
+                    startCounter();
+                }
+            }
+
+        }
+
+
+
+        function cobaah() {
+            clearInterval(timerId);
+            saveCounterToDatabase(seconds);
+            seconds = 0;
+            document.getElementById('counter').textContent = seconds;
+            sessionStorage.removeItem('counter'); // Menghapus nilai counter dari session storage saat berhenti
+        }
+
+        function resetCounter() {
+            clearInterval(timerId);
+            seconds = 0;
+            document.getElementById('counter').textContent = seconds;
+            sessionStorage.removeItem('counter'); // Menghapus nilai counter dari session storage saat mereset
+        }
+
+        function updateCounter() {
+            seconds++;
+            document.getElementById('counter').textContent = seconds;
+            saveCounterToDatabase(seconds);
+            sessionStorage.setItem('counter', seconds); // Menyimpan nilai counter di session storage saat counter diperbarui
+        }
+
+        function saveCounterToDatabase(counterValue) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'dt_mach.php', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('Counter berhasil disimpan ke database.');
+                }
+            };
+            // Mengirim data counter ke PHP
+            xhr.send('&time=' + counterValue);
+        }
+
+    </script>
+</body>
+
+</html>

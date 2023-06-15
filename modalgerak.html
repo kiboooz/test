@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Modal Berkedip Terus Menerus dengan JavaScript</title>
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      text-align: center;
+    }
+
+    .blink {
+      animation: blinker 1s linear infinite;
+    }
+
+    @keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button onclick="showModal()">Tampilkan Modal</button>
+
+  <div id="myModal" class="modal">
+    <div id="modalContent" class="modal-content blink">
+      <h2>Ini adalah modal yang berkedip terus menerus!</h2>
+      <p>Klik tombol di bawah untuk menutup modal.</p>
+      <button onclick="hideModal()">Tutup Modal</button>
+    </div>
+  </div>
+
+  <script>
+    function showModal() {
+      var modalElement = document.getElementById("myModal");
+      modalElement.style.display = "block";
+
+      setInterval(function () {
+        var modalContent = document.getElementById("modalContent");
+        modalContent.classList.toggle("blink");
+      }, 1000);
+    }
+
+    function hideModal() {
+      var modalElement = document.getElementById("myModal");
+      modalElement.style.display = "none";
+    }
+  </script>
+
+</body>
+
+</html>
